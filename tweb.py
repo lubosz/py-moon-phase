@@ -1,16 +1,18 @@
 """A twisted.web.Resource for the Moon."""
 
-from twisted import web
+from twisted.web import resource
 
 import moon
-import DateTime
-import re
+try:
+    from mx import DateTime
+except ImportError:
+    import DateTime
 
-TRUE = 1 == 1
-FALSE = not TRUE
+True = 1 == 1
+False = not True
 
-class MoonResource(web.Resource):
-    isLeaf = TRUE
+class MoonResource(resource.Resource):
+    isLeaf = True
     def render(self, request):
 	args = {}
 
@@ -24,7 +26,6 @@ class MoonResource(web.Resource):
 	for k in request.args.keys():
 	    if request.args[k]:
 		args[k] = request.args[k][-1]
-
 
 	for k in args.keys():
 	    try:
@@ -57,7 +58,7 @@ class MoonResource(web.Resource):
 	     phase.age,
 	     phase.angular_diameter)
 
-        t = """<table border="1">""" \
+        t = """<table border=\"1\">""" \
             """    <tr><th>Phase</th><th>Date</th><th>Days</th></tr>\n"""
 
         labels = ["New", "1st Quarter", "Full", "3rd Quarter", "New"]

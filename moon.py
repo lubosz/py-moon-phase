@@ -24,8 +24,8 @@ given date; and phase_hunt(), which given a date, finds the dates of
 the nearest full moon, new moon, etc.
 """
 
-from types import *
-from math import *
+from types import IntType
+from math import sin, cos, floor, sqrt, pi, tan, atan # asin, atan2
 import bisect
 try:
     import DateTime
@@ -247,7 +247,7 @@ def phase(phase_date=DateTime.now()):
     MM = fixangle(moon_longitude - 0.1114041 * day - c.moon_mean_perigee_epoch)
 
     # Moon's ascending node mean longitude
-    MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
+    # MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
 
     evection = 1.2739 * sin(torad(2*(moon_longitude - lambda_sun) - MM))
 
@@ -274,20 +274,24 @@ def phase(phase_date=DateTime.now()):
     # True longitude
     lPP = lP + variation
 
+    #
+    # Calculation of the Moon's inclination
+    # unused for phase calculation.
+    
     # Corrected longitude of the node
-    NP = MN - 0.16 * sin(torad(M))
+    # NP = MN - 0.16 * sin(torad(M))
 
     # Y inclination coordinate
-    y = sin(torad(lPP - NP)) * cos(torad(c.moon_inclination))
+    # y = sin(torad(lPP - NP)) * cos(torad(c.moon_inclination))
 
     # X inclination coordinate
-    x = cos(torad(lPP - NP))
+    # x = cos(torad(lPP - NP))
 
     # Ecliptic longitude (unused?)
-    lambda_moon = todeg(atan2(y,x)) + NP
+    # lambda_moon = todeg(atan2(y,x)) + NP
 
     # Ecliptic latitude (unused?)
-    BetaM = todeg(asin(sin(torad(lPP - NP)) * sin(torad(c.moon_inclination))))
+    # BetaM = todeg(asin(sin(torad(lPP - NP)) * sin(torad(c.moon_inclination))))
 
     #######
     #
@@ -308,7 +312,7 @@ def phase(phase_date=DateTime.now()):
     moon_angular_diameter = c.moon_angular_size / moon_diam_frac
 
     # Calculate Moon's parallax (unused?)
-    moon_parallax = c.moon_parallax / moon_diam_frac
+    # moon_parallax = c.moon_parallax / moon_diam_frac
 
     res = {
         'phase': fixangle(moon_age) / 360.0,

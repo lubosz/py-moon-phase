@@ -8,20 +8,20 @@ except ImportError:
     from mx import DateTime
 import math
 
-from types import *
+from types import StringType
 
 class MoonPhaseConstruction(unittest.TestCase):
     """Test the MoonPhase constructor."""
 
     def testDefaultConstruction(self):
-        o = moon.MoonPhase()
+        moon.MoonPhase()
 
     def testJDNConstruction(self):
         # XXX: Are there any JDN values which should be invalid?
-        o = moon.MoonPhase(2452186)
+        moon.MoonPhase(2452186)
 
     def testDateTimeConstruction(self):
-        o = moon.MoonPhase(DateTime.DateTimeFrom("July 29, 2039"))
+        moon.MoonPhase(DateTime.DateTimeFrom("July 29, 2039"))
 
     def testBadArgConstruction(self):
         self.assertRaises(TypeError, moon.MoonPhase, "Hoboken")

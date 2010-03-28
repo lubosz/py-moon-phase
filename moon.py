@@ -87,7 +87,7 @@ class MoonPhase:
              self.q3_date, self.nextnew_date) = phase_hunt(self.date)
 
             return getattr(self,a)
-        raise AttributeError, a
+        raise AttributeError(a)
 
     def __repr__(self):
         if type(self.date) is int:
@@ -189,7 +189,7 @@ def phase_string(p):
         (NEXTNEW - PRECISION, "waning crescent"),
         (NEXTNEW + PRECISION, "new"))
 
-    i = bisect.bisect(map(lambda a: a[0], phase_strings), p)
+    i = bisect.bisect([a[0] for a in phase_strings], p)
 
     return phase_strings[i][1]
 
@@ -355,9 +355,9 @@ def phase_hunt(sdate=DateTime.now()):
         nt1 = nt2
         k1 = k2
 
-    phases = map(truephase,
+    phases = list(map(truephase,
                  [k1,    k1,    k1,    k1,    k2],
-                 [0/4.0, 1/4.0, 2/4.0, 3/4.0, 0/4.0])
+                 [0/4.0, 1/4.0, 2/4.0, 3/4.0, 0/4.0]))
 
     return phases
 # phase_hunt()
@@ -402,7 +402,7 @@ def truephase(k, tphase):
     moon, and a phase selector (0.0, 0.25, 0.5, 0.75), obtain the
     true, corrected phase time."""
 
-    apcor = 0
+    apcor = False
 
     # add phase to new moon time
     k = k + tphase
@@ -448,7 +448,7 @@ def truephase(k, tphase):
             + 0.0005 * dsin(m + 2 * mprime)
             )
 
-        apcor = 'TRUE'
+        apcor = True
     elif (abs(tphase - 0.25) < 0.01) or (abs(tphase - 0.75) < 0.01):
 
         pt = pt + (
@@ -474,12 +474,12 @@ def truephase(k, tphase):
         else:
             #  Last quarter correction
             pt = pt + -0.0028 + 0.0004 * dcos(m) - 0.0003 * dcos(mprime)
-        apcor = 'TRUE'
+        apcor = True
 
     if not apcor:
-        raise ValueError,\
-              "TRUEPHASE called with invalid phase selector",\
-              tphase
+        raise ValueError(
+            "TRUEPHASE called with invalid phase selector",
+            tphase)
 
     return DateTime.DateTimeFromJDN(pt)
 # truephase()
@@ -509,4 +509,4 @@ if __name__ == '__main__':
     m = MoonPhase()
     s = """The moon is %s, %.1f%% illuminated, %.1f days old.""" %\
         (m.phase_text, m.illuminated * 100, m.age)
-    print s
+    print (s)

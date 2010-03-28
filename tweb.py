@@ -8,9 +8,6 @@ try:
 except ImportError:
     import DateTime
 
-True = 1 == 1
-False = not True
-
 class MoonResource(resource.Resource):
     isLeaf = True
     def render(self, request):

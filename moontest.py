@@ -8,8 +8,6 @@ except ImportError:
     from mx import DateTime
 import math
 
-from types import StringType
-
 class MoonPhaseConstruction(unittest.TestCase):
     """Test the MoonPhase constructor."""
 
@@ -54,7 +52,7 @@ class MoonPhaseAttributes(unittest.TestCase):
 
     def testPhaseText(self):
         self.assert_(self.o.phase_text)
-        self.assert_(isinstance(self.o.phase_text, StringType))
+        self.assert_(isinstance(self.o.phase_text, basestring))
 
     # Range checks.
     def testPhaseRange(self):

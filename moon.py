@@ -24,7 +24,6 @@ given date; and phase_hunt(), which given a date, finds the dates of
 the nearest full moon, new moon, etc.
 """
 
-from types import IntType
 from math import sin, cos, floor, sqrt, pi, tan, atan # asin, atan2
 import bisect
 try:
@@ -91,7 +90,7 @@ class MoonPhase:
         raise AttributeError, a
 
     def __repr__(self):
-        if type(self.date) == IntType:
+        if type(self.date) is int:
             jdn = self.date
         else:
             jdn = self.date.jdn
@@ -99,7 +98,7 @@ class MoonPhase:
         return "<%s(%d)>" % (self.__class__, jdn)
 
     def __str__(self):
-        if type(self.date) == IntType:
+        if type(self.date) is int:
             d = DateTime.DateTimeFromJDN(self.date)
         else:
             d = self.date

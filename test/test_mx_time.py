@@ -54,6 +54,7 @@ class MxTimeTest(unittest.TestCase):
     def test_utc(self):
         dt_mx = DateTime.DateTimeFrom("July 29, 2039")
         print("dt_mx unix", dt_mx.ticks())
+        print("dt_mx unixgm", dt_mx.gmticks())
 
         dt = datetime(2039, 7, 29, tzinfo=UTC())
         dt_unix = time.mktime(dt.timetuple())
@@ -63,6 +64,10 @@ class MxTimeTest(unittest.TestCase):
         dt_utc_unix = calendar.timegm(dt_local.timetuple())
         # print("dt_local timetuple", dt_local.timetuple())
         print("dt utc unix", dt_utc_unix)
+
+        dt_utc_unix = calendar.timegm((2039, 7, 29, 0, 0, 0))
+        print("dt utc unix 2", dt_utc_unix)
+
         # print("dt_local gmtime", time.gmtime(dt_local_unix))
         # print("dt_local localtime", time.localtime(dt_local_unix))
 
@@ -70,6 +75,9 @@ class MxTimeTest(unittest.TestCase):
         print(dt_mx_from_unix)
 
         print("time.gmtime(2195510400)", time.gmtime(2195510400))
+
+        d = DateTime.DateTimeFrom(year=2039, month=7, day=29)
+        print("dt_mx unix2", d.ticks())
 
 
 if __name__ == "__main__":

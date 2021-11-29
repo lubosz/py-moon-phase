@@ -215,10 +215,7 @@ def phase(phase_date=DateTime.now()):
     # Calculation of the Sun's position
 
     # date within the epoch
-    if hasattr(phase_date, "jdn"):
-        day = phase_date.jdn - EPOCH
-    else:
-        day = phase_date - EPOCH
+    day = phase_date.jdn - EPOCH
 
     # Mean anomaly of the Sun
     N = fixangle((360 / 365.2422) * day)
@@ -337,23 +334,18 @@ def phase_hunt(sdate=DateTime.now()):
     which bound the current lunation.
     """
 
-    if not hasattr(sdate, 'jdn'):
-        sdate = DateTime.DateTimeFromJDN(sdate)
-
     adate = sdate + DateTime.RelativeDateTime(days=-45)
 
     k1 = floor((adate.year + ((adate.month - 1) * (1.0 / 12.0)) - 1900) * 12.3685)
 
     nt1 = meanphase(adate, k1)
-    adate = nt1
+    adate_0 = nt1
 
-    sdate = sdate.jdn
-
-    while 1:
-        adate = adate + SYNODIC_MONTH
+    while True:
+        adate_0 += SYNODIC_MONTH
         k2 = k1 + 1
-        nt2 = meanphase(adate, k2)
-        if nt1 <= sdate < nt2:
+        nt2 = meanphase(DateTime.DateTimeFromJDN(adate_0), k2)
+        if nt1 <= sdate.jdn < nt2:
             break
         nt1 = nt2
         k1 = k2
@@ -377,12 +369,8 @@ def meanphase(sdate, k):
     """
 
     # Time in Julian centuries from 1900 January 0.5
-    if not hasattr(sdate, 'jdn'):
-        delta_t = sdate - DateTime.DateTime(1900, 1, 1, 12).jdn
-        t = delta_t / 36525
-    else:
-        delta_t = sdate - DateTime.DateTime(1900, 1, 1, 12)
-        t = delta_t.days / 36525
+    delta_t = sdate - DateTime.DateTime(1900, 1, 1, 12)
+    t = delta_t.days / 36525
 
     # square for frequent use
     t2 = t * t

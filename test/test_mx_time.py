@@ -1,8 +1,23 @@
 import unittest
+import calendar
+
 from mx import DateTime
-from IPython import embed
-from datetime import datetime
+from datetime import datetime, tzinfo, timedelta
 import time
+
+
+class UTC(tzinfo):
+    """UTC"""
+
+    def utcoffset(self, dt):
+        return timedelta(0)
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return timedelta(0)
+
 
 class MxTimeTest(unittest.TestCase):
     def test_construction(self):
@@ -35,6 +50,26 @@ class MxTimeTest(unittest.TestCase):
 
         mx_gmtime = DateTime.now().gmtime()
         print("mx_gmtime", mx_gmtime.gmticks())
+
+    def test_utc(self):
+        dt_mx = DateTime.DateTimeFrom("July 29, 2039")
+        print("dt_mx unix", dt_mx.ticks())
+
+        dt = datetime(2039, 7, 29, tzinfo=UTC())
+        dt_unix = time.mktime(dt.timetuple())
+        print("dt unix", dt_unix)
+
+        dt_local = datetime(2039, 7, 29)
+        dt_utc_unix = calendar.timegm(dt_local.timetuple())
+        # print("dt_local timetuple", dt_local.timetuple())
+        print("dt utc unix", dt_utc_unix)
+        # print("dt_local gmtime", time.gmtime(dt_local_unix))
+        # print("dt_local localtime", time.localtime(dt_local_unix))
+
+        dt_mx_from_unix = DateTime.gmtime(2195510400)
+        print(dt_mx_from_unix)
+
+        print("time.gmtime(2195510400)", time.gmtime(2195510400))
 
 
 if __name__ == "__main__":

@@ -2,10 +2,9 @@
 
 import moon
 import unittest
-try:
-    import DateTime
-except ImportError:
-    from mx import DateTime
+
+# https://pypi.org/project/egenix-mx-base/
+from mx import DateTime
 import math
 
 class MoonPhaseConstruction(unittest.TestCase):

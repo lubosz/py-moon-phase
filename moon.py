@@ -26,10 +26,9 @@ the nearest full moon, new moon, etc.
 
 from math import sin, cos, floor, sqrt, pi, tan, atan # asin, atan2
 import bisect
-try:
-    import DateTime
-except ImportError:
-    from mx import DateTime
+
+# https://pypi.org/project/egenix-mx-base/
+from mx import DateTime
 
 __TODO__ = [
     'Add command-line interface.',
@@ -276,7 +275,7 @@ def phase(phase_date=DateTime.now()):
     #
     # Calculation of the Moon's inclination
     # unused for phase calculation.
-    
+
     # Corrected longitude of the node
     # NP = MN - 0.16 * sin(torad(M))
 

@@ -189,8 +189,7 @@ class MoonPhaseSeek(unittest.TestCase):
                 # line?
                 gap = 1 - gap
             self.failUnless(gap < self.tolerance,
-                            "Average gap is %s, " \
-                            "which exceeds tolerance %s."
+                            "Average gap is %s, which exceeds tolerance %s."
                             % (gap, self.tolerance))
             phase = phase + 0.25
 

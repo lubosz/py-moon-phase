@@ -7,6 +7,7 @@ import unittest
 from mx import DateTime
 import math
 
+
 class MoonPhaseConstruction(unittest.TestCase):
     """Test the MoonPhase constructor."""
 
@@ -125,7 +126,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
         ("890915.1151", "full"),
         ("890922.0210", "last"),
         ("890929.2147", "new")
-        ]
+    ]
 
     transtbl = {"new": 0.0,
                 "first": 0.25,
@@ -144,8 +145,8 @@ class MoonPhaseAccuracy(unittest.TestCase):
             hour = int(date[7:9])
             minute = int(date[9:11])
 
-            d = DateTime.DateTimeFrom(year=year,month=month,
-                                      day=day,hour=hour,minute=minute)
+            d = DateTime.DateTimeFrom(year=year, month=month,
+                                      day=day, hour=hour, minute=minute)
             o = moon.MoonPhase(d)
             error = abs(phase - o.phase)
             if error > 0.5:
@@ -163,14 +164,15 @@ class MoonPhaseSeek(unittest.TestCase):
 
     def setUp(self):
         self.o = moon.MoonPhase()
+
     def testAttibrutePresence(self):
-        for p in ['new','q1','full','q3','nextnew']:
+        for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
             self.assert_(isinstance(getattr(self.o, p),
                                     DateTime.DateTimeType))
 
     def testBallparkAccuracy(self):
-        for p in ['new','q1','full','q3','nextnew']:
+        for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
             d = getattr(self.o, p)
             if abs(self.o.date.jdn - d.jdn) > 30:
@@ -178,7 +180,7 @@ class MoonPhaseSeek(unittest.TestCase):
 
     def testSanityCheck(self):
         phase = 0.0
-        for p in ['new','q1','full','q3','nextnew']:
+        for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
             d = getattr(self.o, p)
             gap = abs(moon.MoonPhase(d).phase - phase)
@@ -187,7 +189,7 @@ class MoonPhaseSeek(unittest.TestCase):
                 # line?
                 gap = 1 - gap
             self.failUnless(gap < self.tolerance,
-                            "Average gap is %s, "\
+                            "Average gap is %s, " \
                             "which exceeds tolerance %s."
                             % (gap, self.tolerance))
             phase = phase + 0.25

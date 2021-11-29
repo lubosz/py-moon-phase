@@ -114,56 +114,56 @@ class AstronomicalConstants:
 
     # 1980 January 0.0 in JDN
     # XXX: DateTime(1980).jdn yields 2444239.5 -- which one is right?
-    epoch = 2444238.5
+    EPOCH = 2444238.5
 
     # Ecliptic longitude of the Sun at epoch 1980.0
-    ecliptic_longitude_epoch = 278.833540
+    ECLIPTIC_LONGITUDE_EPOCH = 278.833540
 
     # Ecliptic longitude of the Sun at perigee
-    ecliptic_longitude_perigee = 282.596403
+    ECLIPTIC_LONGITUDE_PERIGEE = 282.596403
 
     # Eccentricity of Earth's orbit
-    eccentricity = 0.016718
+    ECCENTRICITY = 0.016718
 
     # Semi-major axis of Earth's orbit, in kilometers
-    sun_smaxis = 1.49585e8
+    SUN_SMAXIS = 1.49585e8
 
     # Sun's angular size, in degrees, at semi-major axis distance
-    sun_angular_size_smaxis = 0.533128
+    SUN_ANGULAR_SIZE_SMAXIS = 0.533128
 
     # Elements of the Moon's orbit, epoch 1980.0
 
     # Moon's mean longitude at the epoch
-    moon_mean_longitude_epoch = 64.975464
+    MOON_MEAN_LONGITUDE_EPOCH = 64.975464
     # Mean longitude of the perigee at the epoch
-    moon_mean_perigee_epoch = 349.383063
+    MOON_MEAN_PERIGEE_EPOCH = 349.383063
 
     # Mean longitude of the node at the epoch
-    node_mean_longitude_epoch = 151.950429
+    NODE_MEAN_LONGITUDE_EPOCH = 151.950429
 
     # Inclination of the Moon's orbit
-    moon_inclination = 5.145396
+    MOON_INCLINATION = 5.145396
 
     # Eccentricity of the Moon's orbit
-    moon_eccentricity = 0.054900
+    MOON_ECCENTRICITY = 0.054900
 
     # Moon's angular size at distance a from Earth
-    moon_angular_size = 0.5181
+    MOON_ANGULAR_SIZE = 0.5181
 
     # Semi-mojor axis of the Moon's orbit, in kilometers
-    moon_smaxis = 384401.0
+    MOON_SMAXIS = 384401.0
     # Parallax at a distance a from Earth
-    moon_parallax = 0.9507
+    MOON_PARALLAX = 0.9507
 
     # Synodic month (new Moon to new Moon), in days
-    synodic_month = 29.53058868
+    SYNODIC_MONTH = 29.53058868
 
     # Base date for E. W. Brown's numbered series of lunations (1923 January 16)
-    lunations_base = 2423436.0
+    LUNATIONS_BASE = 2423436.0
 
     # Properties of the Earth
 
-    earth_radius = 6378.16
+    EARTH_RADIUS = 6378.16
 
 
 c = AstronomicalConstants()
@@ -224,39 +224,39 @@ def phase(phase_date=DateTime.now()):
 
     # date within the epoch
     if hasattr(phase_date, "jdn"):
-        day = phase_date.jdn - c.epoch
+        day = phase_date.jdn - c.EPOCH
     else:
-        day = phase_date - c.epoch
+        day = phase_date - c.EPOCH
 
     # Mean anomaly of the Sun
     N = fixangle((360 / 365.2422) * day)
     # Convert from perigee coordinates to epoch 1980
-    M = fixangle(N + c.ecliptic_longitude_epoch - c.ecliptic_longitude_perigee)
+    M = fixangle(N + c.ECLIPTIC_LONGITUDE_EPOCH - c.ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Solve Kepler's equation
-    Ec = kepler(M, c.eccentricity)
-    Ec = sqrt((1 + c.eccentricity) / (1 - c.eccentricity)) * tan(Ec / 2.0)
+    Ec = kepler(M, c.ECCENTRICITY)
+    Ec = sqrt((1 + c.ECCENTRICITY) / (1 - c.ECCENTRICITY)) * tan(Ec / 2.0)
     # True anomaly
     Ec = 2 * todeg(atan(Ec))
     # Suns's geometric ecliptic longuitude
-    lambda_sun = fixangle(Ec + c.ecliptic_longitude_perigee)
+    lambda_sun = fixangle(Ec + c.ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Orbital distance factor
-    F = ((1 + c.eccentricity * cos(torad(Ec))) / (1 - c.eccentricity ** 2))
+    F = ((1 + c.ECCENTRICITY * cos(torad(Ec))) / (1 - c.ECCENTRICITY ** 2))
 
     # Distance to Sun in km
-    sun_dist = c.sun_smaxis / F
-    sun_angular_diameter = F * c.sun_angular_size_smaxis
+    sun_dist = c.SUN_SMAXIS / F
+    sun_angular_diameter = F * c.SUN_ANGULAR_SIZE_SMAXIS
 
     ########
     #
     # Calculation of the Moon's position
 
     # Moon's mean longitude
-    moon_longitude = fixangle(13.1763966 * day + c.moon_mean_longitude_epoch)
+    moon_longitude = fixangle(13.1763966 * day + c.MOON_MEAN_LONGITUDE_EPOCH)
 
     # Moon's mean anomaly
-    MM = fixangle(moon_longitude - 0.1114041 * day - c.moon_mean_perigee_epoch)
+    MM = fixangle(moon_longitude - 0.1114041 * day - c.MOON_MEAN_PERIGEE_EPOCH)
 
     # Moon's ascending node mean longitude
     # MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
@@ -316,11 +316,11 @@ def phase(phase_date=DateTime.now()):
     moon_phase = (1 - cos(torad(moon_age))) / 2.0
 
     # Calculate distance of Moon from the centre of the Earth
-    moon_dist = (c.moon_smaxis * (1 - c.moon_eccentricity ** 2)) / (1 + c.moon_eccentricity * cos(torad(MmP + mEc)))
+    moon_dist = (c.MOON_SMAXIS * (1 - c.MOON_ECCENTRICITY ** 2)) / (1 + c.MOON_ECCENTRICITY * cos(torad(MmP + mEc)))
 
     # Calculate Moon's angular diameter
-    moon_diam_frac = moon_dist / c.moon_smaxis
-    moon_angular_diameter = c.moon_angular_size / moon_diam_frac
+    moon_diam_frac = moon_dist / c.MOON_SMAXIS
+    moon_angular_diameter = c.MOON_ANGULAR_SIZE / moon_diam_frac
 
     # Calculate Moon's parallax (unused?)
     # moon_parallax = c.moon_parallax / moon_diam_frac
@@ -358,7 +358,7 @@ def phase_hunt(sdate=DateTime.now()):
     sdate = sdate.jdn
 
     while 1:
-        adate = adate + c.synodic_month
+        adate = adate + c.SYNODIC_MONTH
         k2 = k1 + 1
         nt2 = meanphase(adate, k2)
         if nt1 <= sdate < nt2:
@@ -398,7 +398,7 @@ def meanphase(sdate, k):
     t3 = t2 * t
 
     nt1 = (
-            2415020.75933 + c.synodic_month * k + 0.0001178 * t2 -
+            2415020.75933 + c.SYNODIC_MONTH * k + 0.0001178 * t2 -
             0.000000155 * t3 + 0.00033 * dsin(166.56 + 132.87 * t -
                                               0.009173 * t2)
     )
@@ -423,7 +423,7 @@ def truephase(k, tphase):
 
     # Mean time of phase
     pt = (
-            2415020.75933 + c.synodic_month * k + 0.0001178 * t2 -
+            2415020.75933 + c.SYNODIC_MONTH * k + 0.0001178 * t2 -
             0.000000155 * t3 + 0.00033 * dsin(166.56 + 132.87 * t -
                                               0.009173 * t2)
     )

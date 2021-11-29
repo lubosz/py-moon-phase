@@ -100,14 +100,15 @@ class MoonPhase:
             d = DateTime.DateTimeFromJDN(self.date)
         else:
             d = self.date
-        s = "%s for %s, %s (%%%.2f illuminated)" % \
-            (self.__class__, d.strftime(), self.phase_text,
-             self.illuminated * 100)
-
-        return s
+        return "%s for %s, %s (%%%.2f illuminated)" % \
+               (self.__class__, d.strftime(), self.phase_text,
+                self.illuminated * 100)
 
 
 class AstronomicalConstants:
+    def __init__(self):
+        pass
+
     # JDN stands for Julian Day Number
     # Angles here are in degrees
 
@@ -130,7 +131,7 @@ class AstronomicalConstants:
     # Sun's angular size, in degrees, at semi-major axis distance
     sun_angular_size_smaxis = 0.533128
 
-    ## Elements of the Moon's orbit, epoch 1980.0
+    # Elements of the Moon's orbit, epoch 1980.0
 
     # Moon's mean longitude at the epoch
     moon_mean_longitude_epoch = 64.975464
@@ -160,20 +161,33 @@ class AstronomicalConstants:
     # Base date for E. W. Brown's numbered series of lunations (1923 January 16)
     lunations_base = 2423436.0
 
-    ## Properties of the Earth
+    # Properties of the Earth
 
     earth_radius = 6378.16
 
 
 c = AstronomicalConstants()
 
-# Little handy mathematical functions.
 
-fixangle = lambda a: a - 360.0 * floor(a / 360.0)
-torad = lambda d: d * pi / 180.0
-todeg = lambda r: r * 180.0 / pi
-dsin = lambda d: sin(torad(d))
-dcos = lambda d: cos(torad(d))
+# Little handy mathematical functions.
+def fixangle(a):
+    return a - 360.0 * floor(a / 360.0)
+
+
+def torad(d):
+    return d * pi / 180.0
+
+
+def todeg(r):
+    return r * 180.0 / pi
+
+
+def dsin(d):
+    return sin(torad(d))
+
+
+def dcos(d):
+    return cos(torad(d))
 
 
 def phase_string(p):
@@ -302,8 +316,7 @@ def phase(phase_date=DateTime.now()):
     moon_phase = (1 - cos(torad(moon_age))) / 2.0
 
     # Calculate distance of Moon from the centre of the Earth
-    moon_dist = (c.moon_smaxis * (1 - c.moon_eccentricity ** 2)) \
-                / (1 + c.moon_eccentricity * cos(torad(MmP + mEc)))
+    moon_dist = (c.moon_smaxis * (1 - c.moon_eccentricity ** 2)) / (1 + c.moon_eccentricity * cos(torad(MmP + mEc)))
 
     # Calculate Moon's angular diameter
     moon_diam_frac = moon_dist / c.moon_smaxis
@@ -323,9 +336,6 @@ def phase(phase_date=DateTime.now()):
     }
 
     return res
-
-
-# phase()
 
 
 def phase_hunt(sdate=DateTime.now()):
@@ -363,9 +373,6 @@ def phase_hunt(sdate=DateTime.now()):
     return phases
 
 
-# phase_hunt()
-
-
 def meanphase(sdate, k):
     """Calculates time of the mean new Moon for a given base date.
 
@@ -397,9 +404,6 @@ def meanphase(sdate, k):
     )
 
     return nt1
-
-
-# meanphase()
 
 
 def truephase(k, tphase):
@@ -436,7 +440,6 @@ def truephase(k, tphase):
     if (tphase < 0.01) or (abs(tphase - 0.5) < 0.01):
 
         # Corrections for New and Full Moon
-
         pt = pt + (
                 (0.1734 - 0.000393 * t) * dsin(m)
                 + 0.0021 * dsin(2 * m)
@@ -473,7 +476,7 @@ def truephase(k, tphase):
                 + 0.0004 * dsin(m - 2 * mprime)
                 - 0.0003 * dsin(2 * m + mprime)
         )
-        if (tphase < 0.5):
+        if tphase < 0.5:
             #  First quarter correction
             pt = pt + 0.0028 - 0.0004 * dcos(m) + 0.0003 * dcos(mprime)
         else:
@@ -487,9 +490,6 @@ def truephase(k, tphase):
             tphase)
 
     return DateTime.DateTimeFromJDN(pt)
-
-
-# truephase()
 
 
 def kepler(m, ecc):
@@ -509,12 +509,12 @@ def kepler(m, ecc):
     return e
 
 
-#
-##
-#
-
-if __name__ == '__main__':
+def main():
     m = MoonPhase()
     s = """The moon is %s, %.1f%% illuminated, %.1f days old.""" % \
         (m.phase_text, m.illuminated * 100, m.age)
     print (s)
+
+
+if __name__ == '__main__':
+    main()

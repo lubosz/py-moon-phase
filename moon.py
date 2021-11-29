@@ -63,7 +63,7 @@ class MoonPhase:
         nextnew_date - the date of the next new moon
     """
 
-    def __init__(self, date=DateTime.now()):
+    def __init__(self, date=DateTime.now().gmtime()):
         """MoonPhase constructor.
 
         Give me a date, as either a Julian Day Number or a DateTime

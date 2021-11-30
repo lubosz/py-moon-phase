@@ -66,13 +66,8 @@ class MoonPhase:
     def __init__(self, date=DateTime.now().gmtime()):
         """MoonPhase constructor.
 
-        Give me a date, as either a Julian Day Number or a DateTime
-        object."""
-
-        if not isinstance(date, DateTime.DateTimeType):
-            self.date = DateTime.DateTimeFromJDN(date)
-        else:
-            self.date = date
+        Give me a date, as DateTime object."""
+        self.date = date
 
         self.__dict__.update(phase(self.date))
 

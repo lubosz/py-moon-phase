@@ -16,15 +16,10 @@ class MoonPhaseConstruction(unittest.TestCase):
 
     def testJDNConstruction(self):
         # XXX: Are there any JDN values which should be invalid?
-        moon.MoonPhase(2452186)
+        moon.MoonPhase(DateTime.DateTimeFromJDN(2452186))
 
     def testDateTimeConstruction(self):
         moon.MoonPhase(DateTime.DateTimeFrom("July 29, 2039"))
-
-    def testBadArgConstruction(self):
-        self.assertRaises(TypeError, moon.MoonPhase, "Hoboken")
-        self.assertRaises(TypeError, moon.MoonPhase, {})
-        self.assertRaises(TypeError, moon.MoonPhase, open)
 
     def testExtraArgConstruction(self):
         self.assertRaises(TypeError, moon.MoonPhase, 1234567, 4321765)

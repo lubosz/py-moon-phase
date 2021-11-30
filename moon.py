@@ -83,18 +83,12 @@ class MoonPhase:
         raise AttributeError(a)
 
     def __repr__(self):
-        if type(self.date) is int:
-            jdn = self.date
-        else:
-            jdn = self.date.jdn
+        jdn = self.date.jdn
 
         return "<%s(%d)>" % (self.__class__, jdn)
 
     def __str__(self):
-        if type(self.date) is int:
-            d = DateTime.DateTimeFromJDN(self.date)
-        else:
-            d = self.date
+        d = self.date
         return "%s for %s, %s (%%%.2f illuminated)" % \
                (self.__class__, d.strftime(), self.phase_text,
                 self.illuminated * 100)

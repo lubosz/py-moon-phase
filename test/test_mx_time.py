@@ -28,6 +28,12 @@ def datetime_to_julian_days(dt):
     return datetime_to_days(dt) + 1721424.5 + 1
 
 
+def julian_days_to_datetime(julian_days):
+    days = julian_days - (1721424.5 + 1)
+    seconds = days * (60 * 60 * 24)
+    return datetime(1, 1, 1) + timedelta(seconds=seconds)
+
+
 class MxTimeTest(unittest.TestCase):
     def test_construction(self):
         dt = DateTime.DateTime(1900, 1, 1, 12)
@@ -106,6 +112,13 @@ class MxTimeTest(unittest.TestCase):
         print("dt_utc days", datetime_to_days(dt_utc))
         print("dt_utc julian days", datetime_to_julian_days(dt_utc))
 
+        assert dt_mx.jdn == datetime_to_julian_days(dt_utc)
+
+        dt_recon = julian_days_to_datetime(dt_mx.jdn)
+        dt_mx_recon = DateTime.DateTimeFromJDN(dt_mx.jdn)
+
+        assert int(calendar.timegm(dt_recon.timetuple())) == int(dt_mx_recon.gmticks())
+
     def test_jd_calc(self):
         year = 1900
         month = 7
@@ -121,6 +134,14 @@ class MxTimeTest(unittest.TestCase):
             dt = datetime(year, month, day, hour, minute, second)
 
             assert round(dt_mx.jdn, 8) == round(datetime_to_julian_days(dt), 8)
+
+            dt_recon = julian_days_to_datetime(dt_mx.jdn)
+            dt_mx_recon = DateTime.DateTimeFromJDN(dt_mx.jdn)
+
+            dt_ticks = calendar.timegm(dt_recon.timetuple())
+            dt_mx_ticks = dt_mx_recon.gmticks()
+
+            assert dt_ticks - 1 < dt_mx_ticks < dt_ticks + 1
 
             year += 3
             month += 3

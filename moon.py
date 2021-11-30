@@ -24,11 +24,25 @@ given date; and phase_hunt(), which given a date, finds the dates of
 the nearest full moon, new moon, etc.
 """
 
-from math import sin, cos, floor, sqrt, pi, tan, atan  # asin, atan2
+from math import sin, cos, floor, sqrt, pi, tan, atan
 import bisect
+from datetime import datetime, timedelta
 
-# https://pypi.org/project/egenix-mx-base/
-from mx import DateTime
+
+def datetime_to_days(dt):
+    delta = dt - datetime(1, 1, 1)
+    return delta.total_seconds() / (60 * 60 * 24)
+
+
+def datetime_to_julian_days(dt):
+    return datetime_to_days(dt) + 1721424.5 + 1
+
+
+def julian_days_to_datetime(julian_days):
+    days = julian_days - (1721424.5 + 1)
+    seconds = days * (60 * 60 * 24)
+    return datetime(1, 1, 1) + timedelta(seconds=seconds)
+
 
 __TODO__ = [
     'Add command-line interface.',
@@ -63,7 +77,7 @@ class MoonPhase:
         nextnew_date - the date of the next new moon
     """
 
-    def __init__(self, date=DateTime.now().gmtime()):
+    def __init__(self, date=datetime.utcnow()):
         """MoonPhase constructor.
 
         Give me a date, as DateTime object."""
@@ -83,14 +97,14 @@ class MoonPhase:
         raise AttributeError(a)
 
     def __repr__(self):
-        jdn = self.date.jdn
+        jdn = datetime_to_julian_days(self.date)
 
         return "<%s(%d)>" % (self.__class__, jdn)
 
     def __str__(self):
         d = self.date
         return "%s for %s, %s (%%%.2f illuminated)" % \
-               (self.__class__, d.strftime(), self.phase_text,
+               (self.__class__, d.__str__, self.phase_text,
                 self.illuminated * 100)
 
 
@@ -188,7 +202,7 @@ def phase_string(p):
     return phase_strings[i][1]
 
 
-def phase(phase_date=DateTime.now()):
+def phase(phase_date=datetime.utcnow()):
     """Calculate phase of moon as a fraction:
 
     The argument is the time for which the phase is requested,
@@ -204,7 +218,7 @@ def phase(phase_date=DateTime.now()):
     # Calculation of the Sun's position
 
     # date within the epoch
-    day = phase_date.jdn - EPOCH
+    day = datetime_to_julian_days(phase_date) - EPOCH
 
     # Mean anomaly of the Sun
     N = fixangle((360 / 365.2422) * day)
@@ -316,14 +330,14 @@ def phase(phase_date=DateTime.now()):
     return res
 
 
-def phase_hunt(sdate=DateTime.now()):
+def phase_hunt(sdate=datetime.utcnow()):
     """Find time of phases of the moon which surround the current date.
 
     Five phases are found, starting and ending with the new moons
     which bound the current lunation.
     """
 
-    adate = sdate + DateTime.RelativeDateTime(days=-45)
+    adate = sdate - timedelta(days=45)
 
     k1 = floor((adate.year + ((adate.month - 1) * (1.0 / 12.0)) - 1900) * 12.3685)
 
@@ -333,8 +347,8 @@ def phase_hunt(sdate=DateTime.now()):
     while True:
         adate_0 += SYNODIC_MONTH
         k2 = k1 + 1
-        nt2 = meanphase(DateTime.DateTimeFromJDN(adate_0), k2)
-        if nt1 <= sdate.jdn < nt2:
+        nt2 = meanphase(julian_days_to_datetime(adate_0), k2)
+        if nt1 <= datetime_to_julian_days(sdate) < nt2:
             break
         nt1 = nt2
         k1 = k2
@@ -358,7 +372,7 @@ def meanphase(sdate, k):
     """
 
     # Time in Julian centuries from 1900 January 0.5
-    delta_t = sdate - DateTime.DateTime(1900, 1, 1, 12)
+    delta_t = sdate - datetime(1900, 1, 1, 12)
     t = delta_t.days / 36525
 
     # square for frequent use
@@ -458,7 +472,7 @@ def truephase(k, tphase):
             "TRUEPHASE called with invalid phase selector",
             tphase)
 
-    return DateTime.DateTimeFromJDN(pt)
+    return julian_days_to_datetime(pt)
 
 
 def kepler(m, ecc):

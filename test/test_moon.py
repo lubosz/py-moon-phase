@@ -3,9 +3,8 @@
 import moon
 import unittest
 
-# https://pypi.org/project/egenix-mx-base/
-from mx import DateTime
 import math
+from datetime import datetime
 
 
 class MoonPhaseConstruction(unittest.TestCase):
@@ -14,12 +13,8 @@ class MoonPhaseConstruction(unittest.TestCase):
     def testDefaultConstruction(self):
         moon.MoonPhase()
 
-    def testJDNConstruction(self):
-        # XXX: Are there any JDN values which should be invalid?
-        moon.MoonPhase(DateTime.DateTimeFromJDN(2452186))
-
     def testDateTimeConstruction(self):
-        moon.MoonPhase(DateTime.DateTimeFrom("July 29, 2039"))
+        moon.MoonPhase(datetime(2039, 7, 29))
 
     def testExtraArgConstruction(self):
         self.assertRaises(TypeError, moon.MoonPhase, 1234567, 4321765)
@@ -43,7 +38,7 @@ class MoonPhaseAttributes(unittest.TestCase):
 
     # Type checks.
     def testDate(self):
-        self.assert_(isinstance(self.o.date, DateTime.DateTimeType))
+        self.assert_(isinstance(self.o.date, datetime))
 
     def testPhaseText(self):
         self.assert_(self.o.phase_text)
@@ -140,8 +135,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
             hour = int(date[7:9])
             minute = int(date[9:11])
 
-            d = DateTime.DateTimeFrom(year=year, month=month,
-                                      day=day, hour=hour, minute=minute)
+            d = datetime(year, month, day, hour, minute)
             o = moon.MoonPhase(d)
             error = abs(phase - o.phase)
             if error > 0.5:
@@ -163,14 +157,13 @@ class MoonPhaseSeek(unittest.TestCase):
     def testAttibrutePresence(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
-            self.assert_(isinstance(getattr(self.o, p),
-                                    DateTime.DateTimeType))
+            self.assert_(isinstance(getattr(self.o, p), datetime))
 
     def testBallparkAccuracy(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
             d = getattr(self.o, p)
-            if abs(self.o.date.jdn - d.jdn) > 30:
+            if abs(moon.datetime_to_julian_days(self.o.date) - moon.datetime_to_julian_days(d)) > 30:
                 self.fail("%s more than a month away" % p)
 
     def testSanityCheck(self):

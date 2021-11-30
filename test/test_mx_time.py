@@ -5,6 +5,8 @@ from mx import DateTime
 from datetime import datetime, tzinfo, timedelta
 import time
 
+from moon import datetime_to_days, datetime_to_julian_days, julian_days_to_datetime
+
 
 class UTC(tzinfo):
     """UTC"""
@@ -17,21 +19,6 @@ class UTC(tzinfo):
 
     def dst(self, dt):
         return timedelta(0)
-
-
-def datetime_to_days(dt):
-    delta = dt - datetime(1, 1, 1)
-    return delta.total_seconds() / (60 * 60 * 24)
-
-
-def datetime_to_julian_days(dt):
-    return datetime_to_days(dt) + 1721424.5 + 1
-
-
-def julian_days_to_datetime(julian_days):
-    days = julian_days - (1721424.5 + 1)
-    seconds = days * (60 * 60 * 24)
-    return datetime(1, 1, 1) + timedelta(seconds=seconds)
 
 
 class MxTimeTest(unittest.TestCase):

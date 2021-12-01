@@ -71,6 +71,12 @@ class MoonPhaseAttributes(unittest.TestCase):
         self.assertTrue(-0.4 < math.log10(self.o.sun_angular_diameter) < -0.2)
 
 
+NEW_MOON = 0.0
+FIRST_QUARTER = 0.25
+FULL_MOON = 0.5
+LAST_QUARTER = 0.75
+
+
 class MoonPhaseAccuracy(unittest.TestCase):
     """Test our output against trusted astronomical data.
 
@@ -79,56 +85,50 @@ class MoonPhaseAccuracy(unittest.TestCase):
 
     # DATA FROM SKY AND TELESCOPE MAGAZINE, UTC:
     lunar_data = [
-        ("890107.1922", "new"),
-        ("890114.1358", "first"),
-        ("890121.2133", "full"),
-        ("890130.0202", "last"),
-        ("890206.0737", "new"),
-        ("890212.2315", "first"),
-        ("890220.1532", "full"),
-        ("890228.2008", "last"),
-        ("890307.1819", "new"),
-        ("890314.1011", "first"),
-        ("890322.0958", "full"),
-        ("890330.1021", "last"),
-        ("890406.0333", "new"),
-        ("890412.2313", "first"),
-        ("890421.0313", "full"),
-        ("890428.2046", "last"),
-        ("890505.1146", "new"),
-        ("890512.1419", "first"),
-        ("890520.1816", "full"),
-        ("890528.0401", "last"),
-        ("890603.1953", "new"),
-        ("890611.0659", "first"),
-        ("890619.0657", "full"),
-        ("890626.0909", "last"),
-        ("890703.0459", "new"),
-        ("890711.0019", "first"),
-        ("890718.1742", "full"),
-        ("890725.1331", "last"),
-        ("890801.1606", "new"),
-        ("890809.1728", "first"),
-        ("890817.0307", "full"),
-        ("890823.1840", "last"),
-        ("890831.0544", "new"),
-        ("890908.0949", "first"),
-        ("890915.1151", "full"),
-        ("890922.0210", "last"),
-        ("890929.2147", "new")
+        ("890107.1922", NEW_MOON),
+        ("890114.1358", FIRST_QUARTER),
+        ("890121.2133", FULL_MOON),
+        ("890130.0202", LAST_QUARTER),
+        ("890206.0737", NEW_MOON),
+        ("890212.2315", FIRST_QUARTER),
+        ("890220.1532", FULL_MOON),
+        ("890228.2008", LAST_QUARTER),
+        ("890307.1819", NEW_MOON),
+        ("890314.1011", FIRST_QUARTER),
+        ("890322.0958", FULL_MOON),
+        ("890330.1021", LAST_QUARTER),
+        ("890406.0333", NEW_MOON),
+        ("890412.2313", FIRST_QUARTER),
+        ("890421.0313", FULL_MOON),
+        ("890428.2046", LAST_QUARTER),
+        ("890505.1146", NEW_MOON),
+        ("890512.1419", FIRST_QUARTER),
+        ("890520.1816", FULL_MOON),
+        ("890528.0401", LAST_QUARTER),
+        ("890603.1953", NEW_MOON),
+        ("890611.0659", FIRST_QUARTER),
+        ("890619.0657", FULL_MOON),
+        ("890626.0909", LAST_QUARTER),
+        ("890703.0459", NEW_MOON),
+        ("890711.0019", FIRST_QUARTER),
+        ("890718.1742", FULL_MOON),
+        ("890725.1331", LAST_QUARTER),
+        ("890801.1606", NEW_MOON),
+        ("890809.1728", FIRST_QUARTER),
+        ("890817.0307", FULL_MOON),
+        ("890823.1840", LAST_QUARTER),
+        ("890831.0544", NEW_MOON),
+        ("890908.0949", FIRST_QUARTER),
+        ("890915.1151", FULL_MOON),
+        ("890922.0210", LAST_QUARTER),
+        ("890929.2147", NEW_MOON)
     ]
-
-    transtbl = {"new": 0.0,
-                "first": 0.25,
-                "full": 0.50,
-                "last": 0.75}
 
     tolerance = 0.001
 
     def testAccuracy(self):
         total_error = 0.0
         for date, phase in self.lunar_data:
-            phase = self.transtbl[phase]
             year = 1900 + int(date[0:2])
             month = int(date[2:4])
             day = int(date[4:6])

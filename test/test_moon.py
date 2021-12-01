@@ -156,22 +156,19 @@ class MoonPhaseSeek(unittest.TestCase):
 
     def testAttibrutePresence(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
-            p = "%s_date" % p
-            self.assertTrue(isinstance(getattr(self.o, p), datetime))
+            self.assertTrue(isinstance(getattr(self.o, f"{p}_date"), datetime))
 
     def testBallparkAccuracy(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
-            p = "%s_date" % p
-            d = getattr(self.o, p)
-            if abs(moon.datetime_to_julian_days(self.o.date) - moon.datetime_to_julian_days(d)) > 30:
+            dt = getattr(self.o, f"{p}_date")
+            if abs(moon.datetime_to_julian_days(self.o.date) - moon.datetime_to_julian_days(dt)) > 30:
                 self.fail("%s more than a month away" % p)
 
     def testSanityCheck(self):
         phase = 0.0
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
-            p = "%s_date" % p
-            d = getattr(self.o, p)
-            gap = abs(moon.MoonPhase(d).phase - phase)
+            dt = getattr(self.o, f"{p}_date")
+            gap = abs(moon.MoonPhase(dt).phase - phase)
             if gap > 0.5:
                 # How does one test for inequality on a cyclical number
                 # line?

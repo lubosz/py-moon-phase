@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # moon.py, based on code by John Walker (http://www.fourmilab.ch/)
 # ported to Python by Kevin Turner <acapnotic@twistedmatrix.com>
 # on June 6, 2001 (JDN 2452066.52491), under a full moon.

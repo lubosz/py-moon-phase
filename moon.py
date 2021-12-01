@@ -222,7 +222,7 @@ def phase(phase_date=datetime.utcnow()):
     Ec = sqrt((1 + ECCENTRICITY) / (1 - ECCENTRICITY)) * tan(Ec / 2.0)
     # True anomaly
     Ec = 2 * math.degrees(atan(Ec))
-    # Suns's geometric ecliptic longuitude
+    # Sun's geometric ecliptic longitude
     lambda_sun = norm_angle(Ec + ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Orbital distance factor
@@ -243,7 +243,7 @@ def phase(phase_date=datetime.utcnow()):
     MM = norm_angle(moon_longitude - 0.1114041 * day - MOON_MEAN_PERIGEE_EPOCH)
 
     # Moon's ascending node mean longitude
-    # MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
+    # MN = norm_angle(c.node_mean_longitude_epoch - 0.0529539 * day)
 
     evection = 1.2739 * sin(math.radians(2 * (moon_longitude - lambda_sun) - MM))
 

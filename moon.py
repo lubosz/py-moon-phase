@@ -488,7 +488,7 @@ def main():
     m = MoonPhase()
     s = """The moon is %s, %.1f%% illuminated, %.1f days old.""" % \
         (m.phase_text, m.illuminated * 100, m.age)
-    print (s)
+    print(s)
 
 
 if __name__ == '__main__':

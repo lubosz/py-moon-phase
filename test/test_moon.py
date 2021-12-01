@@ -38,37 +38,37 @@ class MoonPhaseAttributes(unittest.TestCase):
 
     # Type checks.
     def testDate(self):
-        self.assert_(isinstance(self.o.date, datetime))
+        self.assertTrue(isinstance(self.o.date, datetime))
 
     def testPhaseText(self):
-        self.assert_(self.o.phase_text)
-        self.assert_(isinstance(self.o.phase_text, basestring))
+        self.assertTrue(self.o.phase_text)
+        self.assertTrue(isinstance(self.o.phase_text, str))
 
     # Range checks.
     def testPhaseRange(self):
-        self.assert_(self.o.phase >= 0)
-        self.assert_(self.o.phase <= 1)
+        self.assertTrue(self.o.phase >= 0)
+        self.assertTrue(self.o.phase <= 1)
 
     def testIlluminatedRange(self):
-        self.assert_(self.o.illuminated >= 0)
-        self.assert_(self.o.illuminated <= 1)
+        self.assertTrue(self.o.illuminated >= 0)
+        self.assertTrue(self.o.illuminated <= 1)
 
     def testAgeRange(self):
-        self.assert_(self.o.age >= 0)
-        self.assert_(self.o.age < 30)
+        self.assertTrue(self.o.age >= 0)
+        self.assertTrue(self.o.age < 30)
 
     # Order-of-magnitude checks.
     def testDistanceMagnitude(self):
-        self.assert_(5 < math.log10(self.o.distance) < 6)
+        self.assertTrue(5 < math.log10(self.o.distance) < 6)
 
     def testSunDistanceMagnitude(self):
-        self.assert_(8 <= math.log10(self.o.sun_distance) < 9)
+        self.assertTrue(8 <= math.log10(self.o.sun_distance) < 9)
 
     def testAngularDiameterMagnitude(self):
-        self.assert_(-0.4 < math.log10(self.o.angular_diameter) < -0.2)
+        self.assertTrue(-0.4 < math.log10(self.o.angular_diameter) < -0.2)
 
     def testSunAngularDiameterMagnitude(self):
-        self.assert_(-0.4 < math.log10(self.o.sun_angular_diameter) < -0.2)
+        self.assertTrue(-0.4 < math.log10(self.o.sun_angular_diameter) < -0.2)
 
 
 class MoonPhaseAccuracy(unittest.TestCase):
@@ -144,7 +144,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
             total_error = total_error + error
 
         avg_error = total_error / len(self.lunar_data)
-        self.assert_(avg_error < self.tolerance,
+        self.assertTrue(avg_error < self.tolerance,
                      "avg_error: %s" % avg_error)
 
 
@@ -157,7 +157,7 @@ class MoonPhaseSeek(unittest.TestCase):
     def testAttibrutePresence(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             p = "%s_date" % p
-            self.assert_(isinstance(getattr(self.o, p), datetime))
+            self.assertTrue(isinstance(getattr(self.o, p), datetime))
 
     def testBallparkAccuracy(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
@@ -176,7 +176,7 @@ class MoonPhaseSeek(unittest.TestCase):
                 # How does one test for inequality on a cyclical number
                 # line?
                 gap = 1 - gap
-            self.failUnless(gap < self.tolerance,
+            self.assertTrue(gap < self.tolerance,
                             "Average gap is %s, which exceeds tolerance %s."
                             % (gap, self.tolerance))
             phase = phase + 0.25

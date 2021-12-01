@@ -23,8 +23,8 @@ which gives you a variety of data on the status of the moon for a
 given date; and phase_hunt(), which given a date, finds the dates of
 the nearest full moon, new moon, etc.
 """
-
-from math import sin, cos, floor, sqrt, pi, tan, atan
+import math
+from math import sin, cos, floor, sqrt, tan, atan
 import bisect
 from datetime import datetime, timedelta
 
@@ -169,20 +169,12 @@ def fixangle(a):
     return a - 360.0 * floor(a / 360.0)
 
 
-def torad(d):
-    return d * pi / 180.0
-
-
-def todeg(r):
-    return r * 180.0 / pi
-
-
 def dsin(d):
-    return sin(torad(d))
+    return sin(math.radians(d))
 
 
 def dcos(d):
-    return cos(torad(d))
+    return cos(math.radians(d))
 
 
 def phase_string(p):
@@ -229,12 +221,12 @@ def phase(phase_date=datetime.utcnow()):
     Ec = kepler(M, ECCENTRICITY)
     Ec = sqrt((1 + ECCENTRICITY) / (1 - ECCENTRICITY)) * tan(Ec / 2.0)
     # True anomaly
-    Ec = 2 * todeg(atan(Ec))
+    Ec = 2 * math.degrees(atan(Ec))
     # Suns's geometric ecliptic longuitude
     lambda_sun = fixangle(Ec + ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Orbital distance factor
-    F = ((1 + ECCENTRICITY * cos(torad(Ec))) / (1 - ECCENTRICITY ** 2))
+    F = ((1 + ECCENTRICITY * cos(math.radians(Ec))) / (1 - ECCENTRICITY ** 2))
 
     # Distance to Sun in km
     sun_dist = SUN_SMAXIS / F
@@ -253,27 +245,27 @@ def phase(phase_date=datetime.utcnow()):
     # Moon's ascending node mean longitude
     # MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
 
-    evection = 1.2739 * sin(torad(2 * (moon_longitude - lambda_sun) - MM))
+    evection = 1.2739 * sin(math.radians(2 * (moon_longitude - lambda_sun) - MM))
 
     # Annual equation
-    annual_eq = 0.1858 * sin(torad(M))
+    annual_eq = 0.1858 * sin(math.radians(M))
 
     # Correction term
-    A3 = 0.37 * sin(torad(M))
+    A3 = 0.37 * sin(math.radians(M))
 
     MmP = MM + evection - annual_eq - A3
 
     # Correction for the equation of the centre
-    mEc = 6.2886 * sin(torad(MmP))
+    mEc = 6.2886 * sin(math.radians(MmP))
 
     # Another correction term
-    A4 = 0.214 * sin(torad(2 * MmP))
+    A4 = 0.214 * sin(math.radians(2 * MmP))
 
     # Corrected longitude
     lP = moon_longitude + evection + mEc - annual_eq + A4
 
     # Variation
-    variation = 0.6583 * sin(torad(2 * (lP - lambda_sun)))
+    variation = 0.6583 * sin(math.radians(2 * (lP - lambda_sun)))
 
     # True longitude
     lPP = lP + variation
@@ -305,10 +297,10 @@ def phase(phase_date=datetime.utcnow()):
     moon_age = lPP - lambda_sun
 
     # Phase of the Moon
-    moon_phase = (1 - cos(torad(moon_age))) / 2.0
+    moon_phase = (1 - cos(math.radians(moon_age))) / 2.0
 
     # Calculate distance of Moon from the centre of the Earth
-    moon_dist = (MOON_SMAXIS * (1 - MOON_ECCENTRICITY ** 2)) / (1 + MOON_ECCENTRICITY * cos(torad(MmP + mEc)))
+    moon_dist = (MOON_SMAXIS * (1 - MOON_ECCENTRICITY ** 2)) / (1 + MOON_ECCENTRICITY * cos(math.radians(MmP + mEc)))
 
     # Calculate Moon's angular diameter
     moon_diam_frac = moon_dist / MOON_SMAXIS
@@ -480,7 +472,7 @@ def kepler(m, ecc):
 
     epsilon = 1e-6
 
-    m = torad(m)
+    m = math.radians(m)
     e = m
     while 1:
         delta = e - ecc * sin(e) - m

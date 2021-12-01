@@ -77,73 +77,64 @@ FULL_MOON = 0.5
 LAST_QUARTER = 0.75
 
 
+# DATA FROM SKY AND TELESCOPE MAGAZINE, UTC:
+LUNAR_DATA = [
+    (datetime(1989, 1, 7, 19, 22), NEW_MOON),
+    (datetime(1989, 1, 14, 13, 58), FIRST_QUARTER),
+    (datetime(1989, 1, 21, 21, 33), FULL_MOON),
+    (datetime(1989, 1, 30, 2, 2), LAST_QUARTER),
+    (datetime(1989, 2, 6, 7, 37), NEW_MOON),
+    (datetime(1989, 2, 12, 23, 15), FIRST_QUARTER),
+    (datetime(1989, 2, 20, 15, 32), FULL_MOON),
+    (datetime(1989, 2, 28, 20, 8), LAST_QUARTER),
+    (datetime(1989, 3, 7, 18, 19), NEW_MOON),
+    (datetime(1989, 3, 14, 10, 11), FIRST_QUARTER),
+    (datetime(1989, 3, 22, 9, 58), FULL_MOON),
+    (datetime(1989, 3, 30, 10, 21), LAST_QUARTER),
+    (datetime(1989, 4, 6, 3, 33), NEW_MOON),
+    (datetime(1989, 4, 12, 23, 13), FIRST_QUARTER),
+    (datetime(1989, 4, 21, 3, 13), FULL_MOON),
+    (datetime(1989, 4, 28, 20, 46), LAST_QUARTER),
+    (datetime(1989, 5, 5, 11, 46), NEW_MOON),
+    (datetime(1989, 5, 12, 14, 19), FIRST_QUARTER),
+    (datetime(1989, 5, 20, 18, 16), FULL_MOON),
+    (datetime(1989, 5, 28, 4, 1), LAST_QUARTER),
+    (datetime(1989, 6, 3, 19, 53), NEW_MOON),
+    (datetime(1989, 6, 11, 6, 59), FIRST_QUARTER),
+    (datetime(1989, 6, 19, 6, 57), FULL_MOON),
+    (datetime(1989, 6, 26, 9, 9), LAST_QUARTER),
+    (datetime(1989, 7, 3, 4, 59), NEW_MOON),
+    (datetime(1989, 7, 11, 0, 19), FIRST_QUARTER),
+    (datetime(1989, 7, 18, 17, 42), FULL_MOON),
+    (datetime(1989, 7, 25, 13, 31), LAST_QUARTER),
+    (datetime(1989, 8, 1, 16, 6), NEW_MOON),
+    (datetime(1989, 8, 9, 17, 28), FIRST_QUARTER),
+    (datetime(1989, 8, 17, 3, 7), FULL_MOON),
+    (datetime(1989, 8, 23, 18, 40), LAST_QUARTER),
+    (datetime(1989, 8, 31, 5, 44), NEW_MOON),
+    (datetime(1989, 9, 8, 9, 49), FIRST_QUARTER),
+    (datetime(1989, 9, 15, 11, 51), FULL_MOON),
+    (datetime(1989, 9, 22, 2, 10), LAST_QUARTER),
+    (datetime(1989, 9, 29, 21, 47), NEW_MOON),
+]
+
+
 class MoonPhaseAccuracy(unittest.TestCase):
-    """Test our output against trusted astronomical data.
-
-    XXX: Obtain data for comparsion!
-    """
-
-    # DATA FROM SKY AND TELESCOPE MAGAZINE, UTC:
-    lunar_data = [
-        ("890107.1922", NEW_MOON),
-        ("890114.1358", FIRST_QUARTER),
-        ("890121.2133", FULL_MOON),
-        ("890130.0202", LAST_QUARTER),
-        ("890206.0737", NEW_MOON),
-        ("890212.2315", FIRST_QUARTER),
-        ("890220.1532", FULL_MOON),
-        ("890228.2008", LAST_QUARTER),
-        ("890307.1819", NEW_MOON),
-        ("890314.1011", FIRST_QUARTER),
-        ("890322.0958", FULL_MOON),
-        ("890330.1021", LAST_QUARTER),
-        ("890406.0333", NEW_MOON),
-        ("890412.2313", FIRST_QUARTER),
-        ("890421.0313", FULL_MOON),
-        ("890428.2046", LAST_QUARTER),
-        ("890505.1146", NEW_MOON),
-        ("890512.1419", FIRST_QUARTER),
-        ("890520.1816", FULL_MOON),
-        ("890528.0401", LAST_QUARTER),
-        ("890603.1953", NEW_MOON),
-        ("890611.0659", FIRST_QUARTER),
-        ("890619.0657", FULL_MOON),
-        ("890626.0909", LAST_QUARTER),
-        ("890703.0459", NEW_MOON),
-        ("890711.0019", FIRST_QUARTER),
-        ("890718.1742", FULL_MOON),
-        ("890725.1331", LAST_QUARTER),
-        ("890801.1606", NEW_MOON),
-        ("890809.1728", FIRST_QUARTER),
-        ("890817.0307", FULL_MOON),
-        ("890823.1840", LAST_QUARTER),
-        ("890831.0544", NEW_MOON),
-        ("890908.0949", FIRST_QUARTER),
-        ("890915.1151", FULL_MOON),
-        ("890922.0210", LAST_QUARTER),
-        ("890929.2147", NEW_MOON)
-    ]
+    """Test output against trusted astronomical data."""
 
     tolerance = 0.001
 
     def testAccuracy(self):
         total_error = 0.0
-        for date, phase in self.lunar_data:
-            year = 1900 + int(date[0:2])
-            month = int(date[2:4])
-            day = int(date[4:6])
-            hour = int(date[7:9])
-            minute = int(date[9:11])
-
-            d = datetime(year, month, day, hour, minute)
-            o = moon.MoonPhase(d)
+        for dt, phase in LUNAR_DATA:
+            o = moon.MoonPhase(dt)
             error = abs(phase - o.phase)
             if error > 0.5:
                 # phase is circular
                 error = 1.0 - error
             total_error = total_error + error
 
-        avg_error = total_error / len(self.lunar_data)
+        avg_error = total_error / len(LUNAR_DATA)
         self.assertTrue(avg_error < self.tolerance,
                         "avg_error: %s" % avg_error)
 

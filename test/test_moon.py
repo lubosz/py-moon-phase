@@ -145,7 +145,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
 
         avg_error = total_error / len(self.lunar_data)
         self.assertTrue(avg_error < self.tolerance,
-                     "avg_error: %s" % avg_error)
+                        "avg_error: %s" % avg_error)
 
 
 class MoonPhaseSeek(unittest.TestCase):

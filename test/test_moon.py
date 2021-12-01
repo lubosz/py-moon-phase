@@ -1,28 +1,29 @@
 """Unit-testing moon.py"""
 
-import moon
 import unittest
 
 import math
 from datetime import datetime
+
+from moon import MoonPhase, datetime_to_julian_days, FIRST_QUARTER, NEW_MOON, FULL_MOON, LAST_QUARTER
 
 
 class MoonPhaseConstruction(unittest.TestCase):
     """Test the MoonPhase constructor."""
 
     def testDefaultConstruction(self):
-        moon.MoonPhase()
+        MoonPhase()
 
     def testDateTimeConstruction(self):
-        moon.MoonPhase(datetime(2039, 7, 29))
+        MoonPhase(datetime(2039, 7, 29))
 
     def testExtraArgConstruction(self):
-        self.assertRaises(TypeError, moon.MoonPhase, 1234567, 4321765)
+        self.assertRaises(TypeError, MoonPhase, 1234567, 4321765)
 
 
 class MoonPhaseAttributes(unittest.TestCase):
     def setUp(self):
-        self.o = moon.MoonPhase()
+        self.o = MoonPhase()
 
     def testPresence(self):
         for a in ['date',
@@ -69,12 +70,6 @@ class MoonPhaseAttributes(unittest.TestCase):
 
     def testSunAngularDiameterMagnitude(self):
         self.assertTrue(-0.4 < math.log10(self.o.sun_angular_diameter) < -0.2)
-
-
-NEW_MOON = 0.0
-FIRST_QUARTER = 0.25
-FULL_MOON = 0.5
-LAST_QUARTER = 0.75
 
 
 # DATA FROM SKY AND TELESCOPE MAGAZINE, UTC:
@@ -127,7 +122,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
     def testAccuracy(self):
         total_error = 0.0
         for dt, phase in LUNAR_DATA:
-            o = moon.MoonPhase(dt)
+            o = MoonPhase(dt)
             error = abs(phase - o.phase)
             if error > 0.5:
                 # phase is circular
@@ -143,7 +138,7 @@ class MoonPhaseSeek(unittest.TestCase):
     tolerance = 0.001
 
     def setUp(self):
-        self.o = moon.MoonPhase()
+        self.o = MoonPhase()
 
     def testAttibrutePresence(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
@@ -152,14 +147,14 @@ class MoonPhaseSeek(unittest.TestCase):
     def testBallparkAccuracy(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             dt = getattr(self.o, f"{p}_date")
-            if abs(moon.datetime_to_julian_days(self.o.date) - moon.datetime_to_julian_days(dt)) > 30:
+            if abs(datetime_to_julian_days(self.o.date) - datetime_to_julian_days(dt)) > 30:
                 self.fail("%s more than a month away" % p)
 
     def testSanityCheck(self):
         phase = 0.0
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             dt = getattr(self.o, f"{p}_date")
-            gap = abs(moon.MoonPhase(dt).phase - phase)
+            gap = abs(MoonPhase(dt).phase - phase)
             if gap > 0.5:
                 # How does one test for inequality on a cyclical number
                 # line?

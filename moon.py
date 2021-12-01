@@ -52,11 +52,11 @@ __TODO__ = [
 # Precision used when describing the moon's phase in textual format,
 # in phase_string().
 PRECISION = 0.05
-NEW = 0 / 4.0
-FIRST = 1 / 4.0
-FULL = 2 / 4.0
-LAST = 3 / 4.0
-NEXTNEW = 4 / 4.0
+NEW_MOON = 0.0
+FIRST_QUARTER = 0.25
+FULL_MOON = 0.5
+LAST_QUARTER = 0.75
+NEXT_NEW = 1.0
 
 
 class MoonPhase:
@@ -179,15 +179,15 @@ def dcos(d):
 
 def phase_string(p):
     phase_strings = (
-        (NEW + PRECISION, "new"),
-        (FIRST - PRECISION, "waxing crescent"),
-        (FIRST + PRECISION, "first quarter"),
-        (FULL - PRECISION, "waxing gibbous"),
-        (FULL + PRECISION, "full"),
-        (LAST - PRECISION, "waning gibbous"),
-        (LAST + PRECISION, "last quarter"),
-        (NEXTNEW - PRECISION, "waning crescent"),
-        (NEXTNEW + PRECISION, "new"))
+        (NEW_MOON + PRECISION, "new"),
+        (FIRST_QUARTER - PRECISION, "waxing crescent"),
+        (FIRST_QUARTER + PRECISION, "first quarter"),
+        (FULL_MOON - PRECISION, "waxing gibbous"),
+        (FULL_MOON + PRECISION, "full"),
+        (LAST_QUARTER - PRECISION, "waning gibbous"),
+        (LAST_QUARTER + PRECISION, "last quarter"),
+        (NEXT_NEW - PRECISION, "waning crescent"),
+        (NEXT_NEW + PRECISION, "new"))
 
     i = bisect.bisect([a[0] for a in phase_strings], p)
 
@@ -333,26 +333,26 @@ def phase_hunt(sdate=datetime.utcnow()):
 
     k1 = floor((adate.year + ((adate.month - 1) * (1.0 / 12.0)) - 1900) * 12.3685)
 
-    nt1 = meanphase(adate, k1)
+    nt1 = mean_phase(adate, k1)
     adate_0 = nt1
 
     while True:
         adate_0 += SYNODIC_MONTH
         k2 = k1 + 1
-        nt2 = meanphase(julian_days_to_datetime(adate_0), k2)
+        nt2 = mean_phase(julian_days_to_datetime(adate_0), k2)
         if nt1 <= datetime_to_julian_days(sdate) < nt2:
             break
         nt1 = nt2
         k1 = k2
 
-    phases = list(map(truephase,
+    phases = list(map(true_phase,
                       [k1, k1, k1, k1, k2],
                       [0 / 4.0, 1 / 4.0, 2 / 4.0, 3 / 4.0, 0 / 4.0]))
 
     return phases
 
 
-def meanphase(sdate, k):
+def mean_phase(sdate, k):
     """Calculates time of the mean new Moon for a given base date.
 
     This argument K to this function is the precomputed synodic month
@@ -381,7 +381,7 @@ def meanphase(sdate, k):
     return nt1
 
 
-def truephase(k, tphase):
+def true_phase(k, tphase):
     """Given a K value used to determine the mean phase of the new
     moon, and a phase selector (0.0, 0.25, 0.5, 0.75), obtain the
     true, corrected phase time."""

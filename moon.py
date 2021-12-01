@@ -165,8 +165,8 @@ EARTH_RADIUS = 6378.16
 
 
 # Little handy mathematical functions.
-def fixangle(a):
-    return a - 360.0 * floor(a / 360.0)
+def norm_angle(angle: float) -> float:
+    return angle % 360.0
 
 
 def dsin(d):
@@ -213,9 +213,9 @@ def phase(phase_date=datetime.utcnow()):
     day = datetime_to_julian_days(phase_date) - EPOCH
 
     # Mean anomaly of the Sun
-    N = fixangle((360 / 365.2422) * day)
+    N = norm_angle((360 / 365.2422) * day)
     # Convert from perigee coordinates to epoch 1980
-    M = fixangle(N + ECLIPTIC_LONGITUDE_EPOCH - ECLIPTIC_LONGITUDE_PERIGEE)
+    M = norm_angle(N + ECLIPTIC_LONGITUDE_EPOCH - ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Solve Kepler's equation
     Ec = kepler(M, ECCENTRICITY)
@@ -223,7 +223,7 @@ def phase(phase_date=datetime.utcnow()):
     # True anomaly
     Ec = 2 * math.degrees(atan(Ec))
     # Suns's geometric ecliptic longuitude
-    lambda_sun = fixangle(Ec + ECLIPTIC_LONGITUDE_PERIGEE)
+    lambda_sun = norm_angle(Ec + ECLIPTIC_LONGITUDE_PERIGEE)
 
     # Orbital distance factor
     F = ((1 + ECCENTRICITY * cos(math.radians(Ec))) / (1 - ECCENTRICITY ** 2))
@@ -237,10 +237,10 @@ def phase(phase_date=datetime.utcnow()):
     # Calculation of the Moon's position
 
     # Moon's mean longitude
-    moon_longitude = fixangle(13.1763966 * day + MOON_MEAN_LONGITUDE_EPOCH)
+    moon_longitude = norm_angle(13.1763966 * day + MOON_MEAN_LONGITUDE_EPOCH)
 
     # Moon's mean anomaly
-    MM = fixangle(moon_longitude - 0.1114041 * day - MOON_MEAN_PERIGEE_EPOCH)
+    MM = norm_angle(moon_longitude - 0.1114041 * day - MOON_MEAN_PERIGEE_EPOCH)
 
     # Moon's ascending node mean longitude
     # MN = fixangle(c.node_mean_longitude_epoch - 0.0529539 * day)
@@ -310,9 +310,9 @@ def phase(phase_date=datetime.utcnow()):
     # moon_parallax = c.moon_parallax / moon_diam_frac
 
     res = {
-        'phase': fixangle(moon_age) / 360.0,
+        'phase': norm_angle(moon_age) / 360.0,
         'illuminated': moon_phase,
-        'age': SYNODIC_MONTH * fixangle(moon_age) / 360.0,
+        'age': SYNODIC_MONTH * norm_angle(moon_age) / 360.0,
         'distance': moon_dist,
         'angular_diameter': moon_angular_diameter,
         'sun_distance': sun_dist,

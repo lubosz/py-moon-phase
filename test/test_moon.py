@@ -11,21 +11,21 @@ from moon import MoonPhase, datetime_to_julian_days, FIRST_QUARTER, NEW_MOON, FU
 class MoonPhaseConstruction(unittest.TestCase):
     """Test the MoonPhase constructor."""
 
-    def testDefaultConstruction(self):
+    def test_default_construction(self):
         MoonPhase()
 
-    def testDateTimeConstruction(self):
+    def test_datetime_construction(self):
         MoonPhase(datetime(2039, 7, 29))
 
-    def testExtraArgConstruction(self):
+    def test_extra_arg_construction(self):
         self.assertRaises(TypeError, MoonPhase, 1234567, 4321765)
 
 
 class MoonPhaseAttributes(unittest.TestCase):
-    def setUp(self):
+    def setup(self):
         self.o = MoonPhase()
 
-    def testPresence(self):
+    def test_presence(self):
         for a in ['date',
                   'phase', 'phase_text', 'illuminated',
                   'angular_diameter', 'sun_angular_diameter',
@@ -33,42 +33,42 @@ class MoonPhaseAttributes(unittest.TestCase):
                   'full_date', 'q3_date', 'nextnew_date']:
             getattr(self.o, a)
 
-    def testAbscence(self):
+    def test_absence(self):
         self.assertRaises(AttributeError, getattr,
                           self.o, "no_such_attribute")
 
     # Type checks.
-    def testDate(self):
+    def test_date(self):
         self.assertTrue(isinstance(self.o.date, datetime))
 
-    def testPhaseText(self):
+    def test_phase_text(self):
         self.assertTrue(self.o.phase_text)
         self.assertTrue(isinstance(self.o.phase_text, str))
 
     # Range checks.
-    def testPhaseRange(self):
+    def test_phase_range(self):
         self.assertTrue(self.o.phase >= 0)
         self.assertTrue(self.o.phase <= 1)
 
-    def testIlluminatedRange(self):
+    def test_illuminated_range(self):
         self.assertTrue(self.o.illuminated >= 0)
         self.assertTrue(self.o.illuminated <= 1)
 
-    def testAgeRange(self):
+    def test_age_range(self):
         self.assertTrue(self.o.age >= 0)
         self.assertTrue(self.o.age < 30)
 
     # Order-of-magnitude checks.
-    def testDistanceMagnitude(self):
+    def test_distance_magnitude(self):
         self.assertTrue(5 < math.log10(self.o.distance) < 6)
 
-    def testSunDistanceMagnitude(self):
+    def test_sun_distance_magnitude(self):
         self.assertTrue(8 <= math.log10(self.o.sun_distance) < 9)
 
-    def testAngularDiameterMagnitude(self):
+    def test_angular_diameter_magnitude(self):
         self.assertTrue(-0.4 < math.log10(self.o.angular_diameter) < -0.2)
 
-    def testSunAngularDiameterMagnitude(self):
+    def tests_unangular_diameter_magnitude(self):
         self.assertTrue(-0.4 < math.log10(self.o.sun_angular_diameter) < -0.2)
 
 
@@ -119,7 +119,7 @@ class MoonPhaseAccuracy(unittest.TestCase):
 
     tolerance = 0.001
 
-    def testAccuracy(self):
+    def test_accuracy(self):
         total_error = 0.0
         for dt, phase in LUNAR_DATA:
             o = MoonPhase(dt)
@@ -137,20 +137,20 @@ class MoonPhaseAccuracy(unittest.TestCase):
 class MoonPhaseSeek(unittest.TestCase):
     tolerance = 0.001
 
-    def setUp(self):
+    def setup(self):
         self.o = MoonPhase()
 
-    def testAttibrutePresence(self):
+    def test_attribute_presence(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             self.assertTrue(isinstance(getattr(self.o, f"{p}_date"), datetime))
 
-    def testBallparkAccuracy(self):
+    def test_ballpark_accuracy(self):
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             dt = getattr(self.o, f"{p}_date")
             if abs(datetime_to_julian_days(self.o.date) - datetime_to_julian_days(dt)) > 30:
                 self.fail("%s more than a month away" % p)
 
-    def testSanityCheck(self):
+    def test_sanity_check(self):
         phase = 0.0
         for p in ['new', 'q1', 'full', 'q3', 'nextnew']:
             dt = getattr(self.o, f"{p}_date")
